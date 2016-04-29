@@ -1,2 +1,0 @@
-3.0
-{'neobundle.vim': {'checked_time': 1461758930, 'installed_uri': 'https://github.com/Shougo/neobundle.vim.git', 'installed_path': '/Users/Kotaro/.vim/bundle/neobundle.vim', 'revisions': {}, 'updated_time': '1461276364'}, 'caw.vim': {'checked_time': 1461758930, 'installed_uri': 'https://github.com/tyru/caw.vim.git', 'installed_path': '/Users/Kotaro/.vim/bundle/caw.vim', 'revisions': {'1461461028': 'c4d8c97ecdd070f79e3e6bd42e0c2bc7ca6275ea'}, 'updated_time': '1461461028'}}

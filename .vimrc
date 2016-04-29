@@ -1,5 +1,3 @@
-" カラースキーム
-colorscheme torte
 " Tabの設定
 set tabstop=4
 set autoindent
@@ -13,8 +11,6 @@ nnoremap Y y$
 set display=lastline
 " 補間メニューの数
 set pumheight=10
-" 構文ハイライト
-syntax enable
 " 行番号
 set number
 " 不可視文字を表示,設定
@@ -68,34 +64,57 @@ nnoremap <c-k> <c-w>k
 nnoremap <c-l> <c-w>l
 nnoremap <c-h> <c-w>h
 
+" deinの設定
+" プラグインが実際にインストールされるディレクトリ
+let s:dein_dir = expand('~/.vim/bundle/.dein')
+" dein.vim本体
+let s:dein_repo_dir = expand('~/.vim/bundle/dein.vim')
+let s:rc_dir = expand('~/.vim/rc')
 
-
-" NeoBundle設定
-" 別途↓も実行
-" mkdet noswapfile
-"  27 set nowrr -p ~/.vim/bundle
-" git clone https://github.com/Shougo/neobundle.vim  ~/.vim/bundle/neobundle.vim
-set nocompatible
-if has('vim_starting')
-    set runtimepath+=~/.vim/bundle/neobundle.vim
+" dein.vimがなければgithubから落としてくる
+if &runtimepath !~# '/dein.vim'
+	if !isdirectory(s:dein_repo_dir)
+		execute '! git clone https://github.com/Shougo/dein.vim' s:dein_repo_dir
+	endif
+	execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
 endif
-call neobundle#begin(expand('~/.vim/bundle/'))
-NeoBundleFetch 'Shougo/neobundle.vim'
-" インストールしたいプラグイン列挙
-" インストールしたら':NeoBundleInstall'
-" アップデートは':NeoBundleUpdate'
-NeoBundle "tyru/caw.vim"
 
-call neobundle#end()
-filetype plugin indent on
+" 設定開始
+if dein#load_state(s:dein_dir)
+	call dein#begin(s:dein_dir)
+
+	" プラグインリストを収めたTOMKファイル
+	let s:toml = s:rc_dir . '/dein.toml'
+	let s:lazy_toml = s:rc_dir . '/dein_lazy.toml'
+
+	" TOMLを読み込み，キャッシュをしておく
+	call dein#load_toml(s:toml, {'lazy': 0})
+	call dein#load_toml(s:lazy_toml, {'lazy': 1})
+
+	" 設定終了
+	call dein#end()
+	call dein#save_state()
+endif
+
+" もし，未インストールのものがあったらインストール
+if dein#check_install()
+	call dein#install()
+endif
+
+" 構文ハイライト
+syntax on
+" カラースキーム
+let g:hybrid_custom_term_colors = 1
+colorscheme hybrid
 
 " コメントアウトを切り替えるマッピング
 " \c でカーソル行をコメントアウト
 " 再度 \c でコメントアウトを解除
 " 選択してから複数行の \c も可能
-nmap \c <Plug>(caw:I:toggle)
-vmap \c <Plug>(caw:I:toggle)
+nmap \c <Plug>(caw:zeropos:toggle)
+vmap \c <Plug>(caw:zeropos:toggle)
 
 " \C でコメントアウトの解除
-nmap \C <Plug>(caw:I:uncomment)
-vmap \C <Plug>(caw:I:uncomment)
+nmap \C <Plug>(caw:zeropos:uncomment)
+vmap \C <Plug>(caw:zeropos:uncomment)
+
