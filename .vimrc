@@ -15,7 +15,7 @@ set pumheight=10
 set number
 " 不可視文字を表示,設定
 set list
-set listchars=tab:»-,trail:-,extends:»,precedes:«,nbsp:%,eol:↲
+set listchars=tab:>-,trail:-,extends:»,precedes:«,nbsp:%,eol:↲
 " 右下に表示される行・列の番号
 set ruler
 " 対応するカッコの表示
@@ -37,6 +37,8 @@ set backspace=indent,eol,start
 set mouse=a
 " コマンドを画面最下部に表示
 set showcmd
+" クリップボードとヤンク共有
+set clipboard=unnamed,autoselect
 " j, k による移動を折り返されたテキストでも自然に振る舞うように変更
 nnoremap j gj
 nnoremap k gk
@@ -66,9 +68,9 @@ nnoremap <c-h> <c-w>h
 
 " deinの設定
 " プラグインが実際にインストールされるディレクトリ
-let s:dein_dir = expand('~/.vim/bundle/.dein')
+let s:dein_dir = expand('~/.cache/dein')
 " dein.vim本体
-let s:dein_repo_dir = expand('~/.vim/bundle/dein.vim')
+let s:dein_repo_dir = s:dein_dir . expand('/repos/github.com/Shougo/dein.vim')
 let s:rc_dir = expand('~/.vim/rc')
 
 " dein.vimがなければgithubから落としてくる
@@ -107,6 +109,7 @@ syntax on
 let g:hybrid_custom_term_colors = 1
 colorscheme hybrid
 
+" caw.vimの設定
 " コメントアウトを切り替えるマッピング
 " \c でカーソル行をコメントアウト
 " 再度 \c でコメントアウトを解除
@@ -118,3 +121,49 @@ vmap \c <Plug>(caw:zeropos:toggle)
 nmap \C <Plug>(caw:zeropos:uncomment)
 vmap \C <Plug>(caw:zeropos:uncomment)
 
+" 'Shougo/neocomplete.vim' {{{
+let g:neocomplete#enable_at_startup = 1
+
+if !exists('g:neocomplete#force_omni_input_patterns')
+let g:neocomplete#force_omni_input_patterns = {} 
+endif
+let g:neocomplete#force_overwrite_completefunc = 1
+let g:neocomplete#force_omni_input_patterns.c =
+\ '[^.[:digit:] *\t]\%(\.\|->\)\w*'
+		let g:neocomplete#force_omni_input_patterns.cpp =
+		\ '[^.[:digit:] *\t]\%(\.\|->\)\w*\|\h\w*::\w*'
+
+			" }}}
+			"
+			" 'justmao945/vim-clang' {{{
+
+			" disable auto completion for vim-clang
+			let g:clang_auto = 0
+
+			" default 'longest' can not work with neocomplete
+			let g:clang_c_completeopt   = 'menuone'
+			let g:clang_cpp_completeopt = 'menuone'
+
+			if executable('clang-3.6')
+			let g:clang_exec = 'clang-3.6'
+			elseif executable('clang-3.5')
+			let g:clang_exec = 'clang-3.5'
+			elseif executable('clang-3.4')
+			let g:clang_exec = 'clang-3.4'
+			else
+			let g:clang_exec = 'clang'
+		endif
+
+		if executable('clang-format-3.6')
+		let g:clang_format_exec = 'clang-format-3.6'
+		elseif executable('clang-format-3.5')
+		let g:clang_format_exec = 'clang-format-3.5'
+		elseif executable('clang-format-3.4')
+		let g:clang_format_exec = 'clang-format-3.4'
+		else
+		let g:clang_exec = 'clang-format'
+		endif
+
+		let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
+
+		" }}}
