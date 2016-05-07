@@ -1,3 +1,46 @@
+"NeoBundle Scripts-----------------------------
+if has('vim_starting')
+  if &compatible
+    set nocompatible               " Be iMproved
+  endif
+
+  " Required:
+  set runtimepath+=~/.vim/bundle/neobundle.vim/
+endif
+
+" Required:
+call neobundle#begin(expand('~/.vim/bundle'))
+
+" Let NeoBundle manage NeoBundle
+" Required:
+NeoBundleFetch 'Shougo/neobundle.vim'
+
+" Add or remove your Bundles here:
+NeoBundle 'tyru/caw.vim'
+NeoBundle 'w0ng/vim-hybrid'
+NeoBundle 'Shougo/context_filetype.vim'
+NeoBundle 'Shougo/neoinclude.vim'
+NeoBundle 'Shougo/neocomplete.vim'
+NeoBundle 'tpope/vim-surround'
+NeoBundle 'mattn/emmet-vim'
+NeoBundle 'LeafCage/yankround.vim'
+NeoBundle 'justmao945/vim-clang'
+NeoBundle 'davidhalter/jedi-vim'
+
+" You can specify revision/branch/tag.
+NeoBundle 'Shougo/vimshell', { 'rev' : '3787e5' }
+
+" Required:
+call neobundle#end()
+
+" Required:
+filetype plugin indent on
+
+" If there are uninstalled bundles found on startup,
+" this will conveniently prompt you to install them.
+NeoBundleCheck
+"End NeoBundle Scripts-------------------------
+
 " Tabの設定
 set tabstop=4
 set autoindent
@@ -10,7 +53,7 @@ nnoremap Y y$
 " 行の最後まで表示
 set display=lastline
 " 補間メニューの数
-set pumheight=10
+" set pumheight=10
 " 行番号
 set number
 " 不可視文字を表示,設定
@@ -65,44 +108,6 @@ nnoremap <c-j> <c-w>j
 nnoremap <c-k> <c-w>k
 nnoremap <c-l> <c-w>l
 nnoremap <c-h> <c-w>h
-
-" deinの設定
-" プラグインが実際にインストールされるディレクトリ
-let s:dein_dir = expand('~/.cache/dein')
-" dein.vim本体
-let s:dein_repo_dir = s:dein_dir . expand('/repos/github.com/Shougo/dein.vim')
-let s:rc_dir = expand('~/.vim/rc')
-
-" dein.vimがなければgithubから落としてくる
-if &runtimepath !~# '/dein.vim'
-	if !isdirectory(s:dein_repo_dir)
-		execute '! git clone https://github.com/Shougo/dein.vim' s:dein_repo_dir
-	endif
-	execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
-endif
-
-" 設定開始
-if dein#load_state(s:dein_dir)
-	call dein#begin(s:dein_dir)
-
-	" プラグインリストを収めたTOMKファイル
-	let s:toml = s:rc_dir . '/dein.toml'
-	let s:lazy_toml = s:rc_dir . '/dein_lazy.toml'
-
-	" TOMLを読み込み，キャッシュをしておく
-	call dein#load_toml(s:toml, {'lazy': 0})
-	call dein#load_toml(s:lazy_toml, {'lazy': 1})
-
-	" 設定終了
-	call dein#end()
-	call dein#save_state()
-endif
-
-" もし，未インストールのものがあったらインストール
-if dein#check_install()
-	call dein#install()
-endif
-
 " 構文ハイライト
 syntax on
 " カラースキーム
@@ -121,49 +126,44 @@ vmap \c <Plug>(caw:zeropos:toggle)
 nmap \C <Plug>(caw:zeropos:uncomment)
 vmap \C <Plug>(caw:zeropos:uncomment)
 
-" 'Shougo/neocomplete.vim' {{{
+"neocompleteとjediの設定-----------------------------
+"参考:http://dackdive.hateblo.jp/entry/2014/08/13/130000
+"Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
+" Disable AutoComplPop.
+let g:acp_enableAtStartup = 0
+" Use neocomplete.
 let g:neocomplete#enable_at_startup = 1
+" Use smartcase.
+let g:neocomplete#enable_smart_case = 1
+" Set minimum syntax keyword length.
+let g:neocomplete#sources#syntax#min_keyword_length = 3
+let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+" Plugin key-mappings.
+inoremap <expr><C-g>     neocomplete#undo_completion()
+inoremap <expr><C-l>     neocomplete#complete_common_string()
 
+" Recommended key-mappings.
+" <CR>: close popup and save indent.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function()
+	" return neocomplete#close_popup() . "\<CR>"
+	" For no inserting <CR> key.
+	return pumvisible() ? neocomplete#close_popup() : "\<CR>"
+endfunction
+" <TAB>: completion.
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" <C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><C-y>  neocomplete#close_popup()
+inoremap <expr><C-e>  neocomplete#cancel_popup()
+" Close popup by <Space>.
+inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() :
+"\<Space>"
+autocmd FileType python setlocal omnifunc=jedi#completions
+let g:jedi#completions_enabled = 0
+let g:jedi#auto_vim_configuration = 0
 if !exists('g:neocomplete#force_omni_input_patterns')
-let g:neocomplete#force_omni_input_patterns = {} 
+	let g:neocomplete#force_omni_input_patterns = {}
 endif
-let g:neocomplete#force_overwrite_completefunc = 1
-let g:neocomplete#force_omni_input_patterns.c =
-\ '[^.[:digit:] *\t]\%(\.\|->\)\w*'
-		let g:neocomplete#force_omni_input_patterns.cpp =
-		\ '[^.[:digit:] *\t]\%(\.\|->\)\w*\|\h\w*::\w*'
-
-			" }}}
-			"
-			" 'justmao945/vim-clang' {{{
-
-			" disable auto completion for vim-clang
-			let g:clang_auto = 0
-
-			" default 'longest' can not work with neocomplete
-			let g:clang_c_completeopt   = 'menuone'
-			let g:clang_cpp_completeopt = 'menuone'
-
-			if executable('clang-3.6')
-			let g:clang_exec = 'clang-3.6'
-			elseif executable('clang-3.5')
-			let g:clang_exec = 'clang-3.5'
-			elseif executable('clang-3.4')
-			let g:clang_exec = 'clang-3.4'
-			else
-			let g:clang_exec = 'clang'
-		endif
-
-		if executable('clang-format-3.6')
-		let g:clang_format_exec = 'clang-format-3.6'
-		elseif executable('clang-format-3.5')
-		let g:clang_format_exec = 'clang-format-3.5'
-		elseif executable('clang-format-3.4')
-		let g:clang_format_exec = 'clang-format-3.4'
-		else
-		let g:clang_exec = 'clang-format'
-		endif
-
-		let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
-
-		" }}}
+let g:neocomplete#force_omni_input_patterns.python = '\h\w*\|[^. \t]\.\w*'

@@ -1,0 +1,12 @@
+caw.vim
+context_filetype.vim
+emmet-vim
+jedi-vim
+neobundle.vim
+neocomplete.vim
+neoinclude.vim
+vim-clang
+vim-hybrid
+vim-surround
+vimshell
+yankround.vim
