@@ -1,8 +1,8 @@
 "NeoBundle Scripts-----------------------------
 if has('vim_starting')
-  if &compatible
-    set nocompatible               " Be iMproved
-  endif
+	if &compatible
+		set nocompatible               " Be iMproved
+	endif
 
   " Required:
   set runtimepath+=~/.vim/bundle/neobundle.vim/
@@ -26,6 +26,9 @@ NeoBundle 'mattn/emmet-vim'
 NeoBundle 'LeafCage/yankround.vim'
 NeoBundle 'justmao945/vim-clang'
 NeoBundle 'davidhalter/jedi-vim'
+NeoBundle 'nathanaelkane/vim-indent-guides'
+NeoBundle 'kana/vim-submode'
+NeoBundle 'tomasr/molokai'
 
 " You can specify revision/branch/tag.
 NeoBundle 'Shougo/vimshell', { 'rev' : '3787e5' }
@@ -42,10 +45,10 @@ NeoBundleCheck
 "End NeoBundle Scripts-------------------------
 
 " Tabの設定
-set tabstop=4
+set tabstop=2
 set autoindent
-set shiftwidth=4
-set shiftround
+set shiftwidth=2
+" set shiftround
 " Tabかスペースか
 set noexpandtab
 " Y -> 行末までヤンク
@@ -58,7 +61,7 @@ set display=lastline
 set number
 " 不可視文字を表示,設定
 set list
-set listchars=tab:>-,trail:-,extends:»,precedes:«,nbsp:%,eol:↲
+set listchars=tab:\ \ ,trail:-,extends:»,precedes:«,nbsp:%,eol:↲
 " 右下に表示される行・列の番号
 set ruler
 " 対応するカッコの表示
@@ -87,6 +90,19 @@ nnoremap j gj
 nnoremap k gk
 " vを二回で行末まで選択
 vnoremap v $h
+" Dでヤンクしない
+nnoremap D "_D
+" コマンドラインに使われる画面上の行数
+set cmdheight=2
+" エディタウィンドウの末尾から2行目にステータスラインを常時表示させる
+set laststatus=2
+" ウィンドウタイトルにファイルパス
+set title
+" 検索結果をハイライト，ESC2回で解除
+set hlsearch
+nnoremap <ESC><ESC> :noh<CR>
+" 検索ワードの途中でも検索
+set incsearch
 " Ctrl + hjkl でウィンドウ間を移動
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
@@ -110,9 +126,27 @@ nnoremap <c-l> <c-w>l
 nnoremap <c-h> <c-w>h
 " 構文ハイライト
 syntax on
-" カラースキーム
-let g:hybrid_custom_term_colors = 1
-colorscheme hybrid
+" 全角スペースの表示
+" http://inari.hatenablog.com/entry/2014/05/05/231307
+function! ZenkakuSpace()
+    highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
+endfunction
+if has('syntax')
+    augroup ZenkakuSpace
+        autocmd!
+        autocmd ColorScheme * call ZenkakuSpace()
+        autocmd VimEnter,WinEnter,BufRead * let w:m1=matchadd('ZenkakuSpace', '　')
+    augroup END
+    call ZenkakuSpace()
+endif
+
+"カラースキーム
+" " hybrid
+" let g:hybrid_custom_term_colors = 1
+" colorscheme hybrid
+" molokai
+colorscheme molokai
+highlight Normal ctermbg=none
 
 " caw.vimの設定
 " コメントアウトを切り替えるマッピング
@@ -121,7 +155,6 @@ colorscheme hybrid
 " 選択してから複数行の \c も可能
 nmap \c <Plug>(caw:zeropos:toggle)
 vmap \c <Plug>(caw:zeropos:toggle)
-
 " \C でコメントアウトの解除
 nmap \C <Plug>(caw:zeropos:uncomment)
 vmap \C <Plug>(caw:zeropos:uncomment)
@@ -158,8 +191,7 @@ inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 inoremap <expr><C-y>  neocomplete#close_popup()
 inoremap <expr><C-e>  neocomplete#cancel_popup()
 " Close popup by <Space>.
-inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() :
-"\<Space>"
+inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() : "\<Space>"
 autocmd FileType python setlocal omnifunc=jedi#completions
 let g:jedi#completions_enabled = 0
 let g:jedi#auto_vim_configuration = 0
@@ -167,3 +199,20 @@ if !exists('g:neocomplete#force_omni_input_patterns')
 	let g:neocomplete#force_omni_input_patterns = {}
 endif
 let g:neocomplete#force_omni_input_patterns.python = '\h\w*\|[^. \t]\.\w*'
+"vim-indent-guides-----------------------------------------
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_start_level=2
+let g:indent_guides_auto_colors=0
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=235
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven  ctermbg=234
+let g:indent_guides_color_change_percent = 30
+let g:indent_guides_guide_size = 1
+"vim-submode----------------------------------------------
+" xでたくさん消しても一発undo可能に
+function! s:my_x()
+    undojoin
+    normal! "_x
+endfunction
+nnoremap <silent> <Plug>(my-x) :<C-u>call <SID>my_x()<CR>
+call submode#enter_with('my_x', 'n', '', 'x', '"_x')
+call submode#map('my_x', 'n', 'r', 'x', '<Plug>(my-x)')

@@ -2,11 +2,14 @@ caw.vim
 context_filetype.vim
 emmet-vim
 jedi-vim
+molokai
 neobundle.vim
 neocomplete.vim
 neoinclude.vim
 vim-clang
 vim-hybrid
+vim-indent-guides
+vim-submode
 vim-surround
 vimshell
 yankround.vim
