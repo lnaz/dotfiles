@@ -1,4 +1,5 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =2
+let g:netrw_dirhist_cnt =3
 let g:netrw_dirhist_1='/Users/Kotaro/.vim'
 let g:netrw_dirhist_2='/Users/Kotaro/dotfiles/.vim/bundle/caw.vim'
+let g:netrw_dirhist_3='/Users/Kotaro/Lecture/DigitalSignal/02_program/source'

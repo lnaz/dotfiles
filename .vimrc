@@ -21,6 +21,7 @@ NeoBundle 'w0ng/vim-hybrid'
 NeoBundle 'Shougo/context_filetype.vim'
 NeoBundle 'Shougo/neoinclude.vim'
 NeoBundle 'Shougo/neocomplete.vim'
+NeoBundle 'Shougo/vimproc.vim'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'mattn/emmet-vim'
 NeoBundle 'LeafCage/yankround.vim'
@@ -29,7 +30,12 @@ NeoBundle 'davidhalter/jedi-vim'
 NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'kana/vim-submode'
 NeoBundle 'tomasr/molokai'
-
+NeoBundle 'lervag/vimtex'
+NeoBundleLazy "thinca/vim-quickrun", {
+      \ 'depends': 'osyo-manga/shabadou.vim',
+      \ 'autoload': {
+      \   'mappings': [['nxo', '<Plug>(quickrun)']]
+      \ }}
 " You can specify revision/branch/tag.
 NeoBundle 'Shougo/vimshell', { 'rev' : '3787e5' }
 
@@ -88,6 +94,9 @@ set clipboard=unnamed,autoselect
 " j, k による移動を折り返されたテキストでも自然に振る舞うように変更
 nnoremap j gj
 nnoremap k gk
+" :w,:qを大文字でも可に
+cnoremap W w
+cnoremap Q q
 " vを二回で行末まで選択
 vnoremap v $h
 " Dでヤンクしない
@@ -103,6 +112,9 @@ set hlsearch
 nnoremap <ESC><ESC> :noh<CR>
 " 検索ワードの途中でも検索
 set incsearch
+" 下に分割
+set splitbelow
+" ウィンドウ分割したとき，アクティブを変更
 " Ctrl + hjkl でウィンドウ間を移動
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
@@ -199,6 +211,7 @@ if !exists('g:neocomplete#force_omni_input_patterns')
 	let g:neocomplete#force_omni_input_patterns = {}
 endif
 let g:neocomplete#force_omni_input_patterns.python = '\h\w*\|[^. \t]\.\w*'
+
 "vim-indent-guides-----------------------------------------
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_start_level=2
@@ -207,12 +220,85 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=235
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven  ctermbg=234
 let g:indent_guides_color_change_percent = 30
 let g:indent_guides_guide_size = 1
+
 "vim-submode----------------------------------------------
 " xでたくさん消しても一発undo可能に
-function! s:my_x()
-    undojoin
-    normal! "_x
+" function! s:my_x()
+"     undojoin
+"     normal! "_x
+" endfunction
+" nnoremap <silent> <Plug>(my-x) :<C-u>call <SID>my_x()<CR>
+" call submode#enter_with('my_x', 'n', '', 'x', '"_x')
+" call submode#map('my_x', 'n', 'r', 'x', '<Plug>(my-x)')
+
+"vim-quickrun-------------------------------------------------
+nmap <Leader>r <Plug>(quickrun)
+let s:hooks = neobundle#get_hooks("vim-quickrun")
+function! s:hooks.on_source(bundle)
+  let g:quickrun_config = {
+        \   "_": {
+				\			"outputter/buffer/split": ":botright 8sp",
+				\			"outputter/buffer/into": 1,
+        \     "hook/close_quickfix/enable_success" : 1,
+        \     "hook/close_buffer/enable_failure" : 1,
+        \     "outputter" : "multi:buffer:quickfix",
+        \     "hook/neco/enable" : 1,
+        \     "hook/neco/wait" : 20,
+        \     "runner": "vimproc",
+        \     "hook/time/enable" : 1,
+        \   },
+        \   'tex':{
+        \     'command' : 'latexmk',
+        \     'cmdopt': '-pdf -pvc',
+        \     'exec': ['%c %o %s']
+        \   },
+        \   'python':{
+        \     'command' : 'python',
+        \     'exec': ['%c %s']
+        \   },
+        \ }
 endfunction
-nnoremap <silent> <Plug>(my-x) :<C-u>call <SID>my_x()<CR>
-call submode#enter_with('my_x', 'n', '', 'x', '"_x')
-call submode#map('my_x', 'n', 'r', 'x', '<Plug>(my-x)')
+" q でquickfixを閉じれるようにする。
+au FileType qf nnoremap <silent><buffer>q :quit<CR>
+" \r で保存してからquickrunを実行する。
+let g:quickrun_no_default_key_mappings = 1
+nnoremap <Leader>r :write<CR>:QuickRun -mode n<CR>
+xnoremap <Leader>r :<C-U>write<CR>gv:QuickRun -mode v<CR>
+" \r でquickfixを閉じて、保存してからquickrunを実行する。
+let g:quickrun_no_default_key_mappings = 1
+nnoremap <Leader>r :cclose<CR>:write<CR>:QuickRun -mode n<CR>
+xnoremap <Leader>r :<C-U>cclose<CR>:write<CR>gv:QuickRun -mode v<CR>
+" <C-c> でquickrunを停止
+nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
+
+"vimtex---------------------------------------------------------
+let g:tex_flavor='latex'
+let g:vimtex_latexmk_options = '-pdf'
+" texのconcealを無効化
+" let g:tex_conceal=''
+" let g:vimtex_fold_enabled = 1
+" let g:vimtex_fold_automatic = 1
+" let g:vimtex_fold_envs = 1
+" let g:vimtex_toc_split_pos = "topleft"
+" let g:vimtex_toc_width = 10
+" if !exists('g:neocomplete#sources#omni#input_patterns')
+"   let g:neocomplete#sources#omni#input_patterns = {}
+" endif
+" let g:neocomplete#sources#omni#input_patterns.tex = "\\cite{\s*[0-9A-Za-z_:]*\|\\ref{\s*[0-9A-Za-z_:]*"
+"
+" augroup myLaTeXQuickrun
+"     au!
+"     if has('gui_running')
+"         au BufEnter *.tex inoremap <silent> $  <C-g>u$$<ESC>:call IMState("Leave")<CR>i
+"     endif
+" augroup END
+"
+" function! s:TeXDollarFunc()
+"     " ime fixed?
+"     let s:cmd = "<Left>"
+"     if g:IMState == 2
+"         s:cmd += "<C-^>"
+"     endif
+"
+"     return s:cmd
+" endfunction

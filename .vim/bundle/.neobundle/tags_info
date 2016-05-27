@@ -6,10 +6,14 @@ molokai
 neobundle.vim
 neocomplete.vim
 neoinclude.vim
+shabadou.vim
 vim-clang
 vim-hybrid
 vim-indent-guides
+vim-quickrun
 vim-submode
 vim-surround
+vimproc.vim
 vimshell
+vimtex
 yankround.vim
