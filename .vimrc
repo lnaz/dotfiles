@@ -249,7 +249,7 @@ function! s:hooks.on_source(bundle)
         \   },
         \   'tex':{
         \     'command' : 'latexmk',
-        \     'cmdopt': '-pdf -pvc',
+        \     'cmdopt': '-pdfdvi -pvc',
         \     'exec': ['%c %o %s']
         \   },
         \   'python':{
