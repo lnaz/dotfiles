@@ -8,6 +8,7 @@ neocomplete.vim
 neoinclude.vim
 shabadou.vim
 vim-clang
+vim-endwise
 vim-hybrid
 vim-indent-guides
 vim-quickrun

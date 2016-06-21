@@ -38,6 +38,7 @@ NeoBundleLazy "thinca/vim-quickrun", {
       \ }}
 " You can specify revision/branch/tag.
 NeoBundle 'Shougo/vimshell', { 'rev' : '3787e5' }
+NeoBundle 'tpope/vim-endwise'
 
 " Required:
 call neobundle#end()
