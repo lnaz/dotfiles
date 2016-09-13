@@ -22,6 +22,8 @@ NeoBundle 'Shougo/context_filetype.vim'
 NeoBundle 'Shougo/neoinclude.vim'
 NeoBundle 'Shougo/neocomplete.vim'
 NeoBundle 'Shougo/vimproc.vim'
+NeoBundle 'Shougo/vimfiler.vim'
+NeoBundle 'Shougo/unite.vim'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'mattn/emmet-vim'
 NeoBundle 'LeafCage/yankround.vim'
@@ -158,8 +160,9 @@ endif
 " let g:hybrid_custom_term_colors = 1
 " colorscheme hybrid
 " molokai
-colorscheme molokai
-highlight Normal ctermbg=none
+" colorscheme molokai
+" highlight Normal ctermbg=none
+colorscheme torte
 
 " caw.vimの設定
 " コメントアウトを切り替えるマッピング
@@ -303,3 +306,5 @@ let g:vimtex_latexmk_options = '-pdf'
 "
 "     return s:cmd
 " endfunction
+"vimfiler---------------------------------------------------------
+nnoremap <leader>e :VimFilerExplore -split -winwidth=30 -find -no-quit<Cr>
