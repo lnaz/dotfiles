@@ -17,13 +17,13 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 
 " Add or remove your Bundles here:
 NeoBundle 'tyru/caw.vim'
-NeoBundle 'w0ng/vim-hybrid'
 NeoBundle 'Shougo/context_filetype.vim'
 NeoBundle 'Shougo/neoinclude.vim'
 NeoBundle 'Shougo/neocomplete.vim'
+NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/vimproc.vim'
 NeoBundle 'Shougo/vimfiler.vim'
-NeoBundle 'Shougo/unite.vim'
+" NeoBundle 'Shougo/neomru.vim'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'mattn/emmet-vim'
 NeoBundle 'LeafCage/yankround.vim'
@@ -33,11 +33,11 @@ NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'kana/vim-submode'
 NeoBundle 'tomasr/molokai'
 NeoBundle 'lervag/vimtex'
-NeoBundleLazy "thinca/vim-quickrun", {
-      \ 'depends': 'osyo-manga/shabadou.vim',
-      \ 'autoload': {
-      \   'mappings': [['nxo', '<Plug>(quickrun)']]
-      \ }}
+" NeoBundleLazy "thinca/vim-quickrun", {
+"       \ 'depends': 'osyo-manga/shabadou.vim'
+"       \ 'autoload': {
+"       \   'mappings': [['nxo', '<Plug>(quickrun)']]
+"       \ }}
 " You can specify revision/branch/tag.
 NeoBundle 'Shougo/vimshell', { 'rev' : '3787e5' }
 NeoBundle 'tpope/vim-endwise'
@@ -54,12 +54,14 @@ NeoBundleCheck
 "End NeoBundle Scripts-------------------------
 
 " Tabの設定
-set tabstop=2
+set tabstop=4
 set autoindent
-set shiftwidth=2
+set shiftwidth=4
 " set shiftround
 " Tabかスペースか
-set noexpandtab
+" expandtabでスペースに
+set expandtab
+" set noexpandtab
 " Y -> 行末までヤンク
 nnoremap Y y$
 " 行の最後まで表示
@@ -139,6 +141,8 @@ nnoremap <c-j> <c-w>j
 nnoremap <c-k> <c-w>k
 nnoremap <c-l> <c-w>l
 nnoremap <c-h> <c-w>h
+" 記録機能を無効化
+nnoremap q <nop>
 " 構文ハイライト
 syntax on
 " 全角スペースの表示
@@ -155,14 +159,9 @@ if has('syntax')
     call ZenkakuSpace()
 endif
 
-"カラースキーム
-" " hybrid
-" let g:hybrid_custom_term_colors = 1
-" colorscheme hybrid
-" molokai
-" colorscheme molokai
-" highlight Normal ctermbg=none
-colorscheme torte
+"molokai-----------------------------------------------------------------
+colorscheme molokai
+set t_Co=256
 
 " caw.vimの設定
 " コメントアウトを切り替えるマッピング
@@ -175,7 +174,7 @@ vmap \c <Plug>(caw:zeropos:toggle)
 nmap \C <Plug>(caw:zeropos:uncomment)
 vmap \C <Plug>(caw:zeropos:uncomment)
 
-"neocompleteとjediの設定-----------------------------
+"neocomplete, jedi---------------------------------------------------------
 "参考:http://dackdive.hateblo.jp/entry/2014/08/13/130000
 "Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
 " Disable AutoComplPop.
@@ -235,45 +234,45 @@ let g:indent_guides_guide_size = 1
 " call submode#enter_with('my_x', 'n', '', 'x', '"_x')
 " call submode#map('my_x', 'n', 'r', 'x', '<Plug>(my-x)')
 
-"vim-quickrun-------------------------------------------------
-nmap <Leader>r <Plug>(quickrun)
-let s:hooks = neobundle#get_hooks("vim-quickrun")
-function! s:hooks.on_source(bundle)
-  let g:quickrun_config = {
-        \   "_": {
-				\			"outputter/buffer/split": ":botright 8sp",
-				\			"outputter/buffer/into": 1,
-        \     "hook/close_quickfix/enable_success" : 1,
-        \     "hook/close_buffer/enable_failure" : 1,
-        \     "outputter" : "multi:buffer:quickfix",
-        \     "hook/neco/enable" : 1,
-        \     "hook/neco/wait" : 20,
-        \     "runner": "vimproc",
-        \     "hook/time/enable" : 1,
-        \   },
-        \   'tex':{
-        \     'command' : 'latexmk',
-        \     'cmdopt': '-pdfdvi -pvc',
-        \     'exec': ['%c %o %s']
-        \   },
-        \   'python':{
-        \     'command' : 'python',
-        \     'exec': ['%c %s']
-        \   },
-        \ }
-endfunction
-" q でquickfixを閉じれるようにする。
-au FileType qf nnoremap <silent><buffer>q :quit<CR>
-" \r で保存してからquickrunを実行する。
-let g:quickrun_no_default_key_mappings = 1
-nnoremap <Leader>r :write<CR>:QuickRun -mode n<CR>
-xnoremap <Leader>r :<C-U>write<CR>gv:QuickRun -mode v<CR>
-" \r でquickfixを閉じて、保存してからquickrunを実行する。
-let g:quickrun_no_default_key_mappings = 1
-nnoremap <Leader>r :cclose<CR>:write<CR>:QuickRun -mode n<CR>
-xnoremap <Leader>r :<C-U>cclose<CR>:write<CR>gv:QuickRun -mode v<CR>
-" <C-c> でquickrunを停止
-nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
+" "vim-quickrun-------------------------------------------------
+" nmap <Leader>r <Plug>(quickrun)
+" let s:hooks = neobundle#get_hooks("vim-quickrun")
+" function! s:hooks.on_source(bundle)
+"   let g:quickrun_config = {
+"         \   "_": {
+" 				\			"outputter/buffer/split": ":botright 8sp",
+" 				\			"outputter/buffer/into": 1,
+"         \     "hook/close_quickfix/enable_success" : 1,
+"         \     "hook/close_buffer/enable_failure" : 1,
+"         \     "outputter" : "multi:buffer:quickfix",
+"         \     "hook/neco/enable" : 1,
+"         \     "hook/neco/wait" : 20,
+"         \     "runner": "vimproc",
+"         \     "hook/time/enable" : 1,
+"         \   },
+"         \   'tex':{
+"         \     'command' : 'latexmk',
+"         \     'cmdopt': '-pdfdvi -pvc',
+"         \     'exec': ['%c %o %s']
+"         \   },
+"         \   'python':{
+"         \     'command' : 'python',
+"         \     'exec': ['%c %s']
+"         \   },
+"         \ }
+" endfunction
+" " q でquickfixを閉じれるようにする。
+" au FileType qf nnoremap <silent><buffer>q :quit<CR>
+" " \r で保存してからquickrunを実行する。
+" let g:quickrun_no_default_key_mappings = 1
+" nnoremap <Leader>r :write<CR>:QuickRun -mode n<CR>
+" xnoremap <Leader>r :<C-U>write<CR>gv:QuickRun -mode v<CR>
+" " \r でquickfixを閉じて、保存してからquickrunを実行する。
+" let g:quickrun_no_default_key_mappings = 1
+" nnoremap <Leader>r :cclose<CR>:write<CR>:QuickRun -mode n<CR>
+" xnoremap <Leader>r :<C-U>cclose<CR>:write<CR>gv:QuickRun -mode v<CR>
+" " <C-c> でquickrunを停止
+" nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
 
 "vimtex---------------------------------------------------------
 let g:tex_flavor='latex'
@@ -287,7 +286,7 @@ let g:vimtex_latexmk_options = '-pdf'
 " let g:vimtex_toc_width = 10
 " if !exists('g:neocomplete#sources#omni#input_patterns')
 "   let g:neocomplete#sources#omni#input_patterns = {}
-" endif
+" endiopenedf
 " let g:neocomplete#sources#omni#input_patterns.tex = "\\cite{\s*[0-9A-Za-z_:]*\|\\ref{\s*[0-9A-Za-z_:]*"
 "
 " augroup myLaTeXQuickrun
@@ -306,5 +305,45 @@ let g:vimtex_latexmk_options = '-pdf'
 "
 "     return s:cmd
 " endfunction
+
+"Unite------------------------------------------------------------------
+" The prefix key.
+nnoremap    [unite]   <Nop>
+nmap    <Leader>f [unite]
+" unite.vim keymap
+let g:unite_source_history_yank_enable =1
+nnoremap <silent> [unite]u :<C-u>Unite<Space>file<CR>
+nnoremap <silent> [unite]g :<C-u>Unite<Space>grep<CR>
+nnoremap <silent> [unite]f :<C-u>Unite<Space>buffer<CR>
+nnoremap <silent> [unite]b :<C-u>Unite<Space>bookmark<CR>
+nnoremap <silent> [unite]a :<C-u>UniteBookmarkAdd<CR>
+nnoremap <silent> [unite]m :<C-u>Unite<Space>file_mru<CR>
+nnoremap <silent> [unite]h :<C-u>Unite<Space>history/yank<CR>
+nnoremap <silent> [unite]r :<C-u>Unite -buffer-name=register register<CR>
+nnoremap <silent> [unite]c :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
+nnoremap <silent> ,vr :UniteResume<CR>
+" vinarise
+let g:vinarise_enable_auto_detect = 1 
+" unite-build map
+nnoremap <silent> ,vb :Unite build<CR>
+nnoremap <silent> ,vcb :Unite build:!<CR>
+nnoremap <silent> ,vch :UniteBuildClearHighlight<CR>
+let g:unite_source_grep_command = 'ag'
+let g:unite_source_grep_default_opts = '--nocolor --nogroup'
+let g:unite_source_grep_max_candidates = 200
+let g:unite_source_grep_recursive_opt = ''
+" 挿入モードで開始
+let g:unite_enable_start_insert=1
+" unite-grepの便利キーマップ
+vnoremap /g y:Unite grep::-iRn:<C-R>=escape(@", '\\.*$^[]')<CR><CR>
+" 大文字小文字を区別しない  
+let g:unite_enable_ignore_case = 1  
+let g:unite_enable_smart_case = 1
+" ESCキーを2回押すと終了する  
+au FileType unite nnoremap <silent> <buffer> <ESC><ESC> :q<CR>
+au FileType unite inoremap <silent> <buffer> <ESC><ESC> <ESC>:q<CR>
+
 "vimfiler---------------------------------------------------------
-nnoremap <leader>e :VimFilerExplore -split -winwidth=30 -find -no-quit<Cr>
+nnoremap <leader>e :VimFilerExplore -split -winwidth=30 -find -no-quit -buffer-name=vimfiler<CR>
+au FileType vimfiler nnoremap <silent> <buffer> <ESC><ESC> :q<CR>
+nnoremap <ESC><ESC> :VimFilerClose vimfiler<CR>
