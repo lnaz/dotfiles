@@ -1,57 +1,41 @@
-"NeoBundle Scripts-----------------------------
-if has('vim_starting')
-	if &compatible
-		set nocompatible               " Be iMproved
-	endif
+"dein.vim----------------------------------------------------------------------
+" プラグインが実際にインストールされるディレクトリ
+let s:dein_dir = expand('~/.cache/dein')
+" dein.vim 本体
+let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
 
-  " Required:
-  set runtimepath+=~/.vim/bundle/neobundle.vim/
+" dein.vim がなければ github から落としてくる
+if &runtimepath !~# '/dein.vim'
+  if !isdirectory(s:dein_repo_dir)
+    execute '!git clone https://github.com/Shougo/dein.vim' s:dein_repo_dir
+  endif
+  execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
 endif
 
-" Required:
-call neobundle#begin(expand('~/.vim/bundle'))
+" 設定開始
+if dein#load_state(s:dein_dir)
+  call dein#begin(s:dein_dir)
 
-" Let NeoBundle manage NeoBundle
-" Required:
-NeoBundleFetch 'Shougo/neobundle.vim'
+  " プラグインリストを収めた TOML ファイル
+  " 予め TOML ファイル(後述)を用意しておく
+  let g:rc_dir    = expand('~/.vim/rc')
+  let s:toml      = g:rc_dir . '/dein.toml'
+  let s:lazy_toml = g:rc_dir . '/dein_lazy.toml'
 
-" Add or remove your Bundles here:
-NeoBundle 'tyru/caw.vim'
-NeoBundle 'Shougo/context_filetype.vim'
-NeoBundle 'Shougo/neoinclude.vim'
-NeoBundle 'Shougo/neocomplete.vim'
-NeoBundle 'Shougo/unite.vim'
-NeoBundle 'Shougo/vimproc.vim'
-NeoBundle 'Shougo/vimfiler.vim'
-NeoBundle 'Shougo/neomru.vim'
-NeoBundle 'tpope/vim-surround'
-NeoBundle 'mattn/emmet-vim'
-NeoBundle 'LeafCage/yankround.vim'
-NeoBundle 'justmao945/vim-clang'
-NeoBundle 'davidhalter/jedi-vim'
-NeoBundle 'nathanaelkane/vim-indent-guides'
-NeoBundle 'kana/vim-submode'
-NeoBundle 'tomasr/molokai'
-NeoBundle 'lervag/vimtex'
-" NeoBundleLazy "thinca/vim-quickrun", {
-"       \ 'depends': 'osyo-manga/shabadou.vim'
-"       \ 'autoload': {
-"       \   'mappings': [['nxo', '<Plug>(quickrun)']]
-"       \ }}
-" You can specify revision/branch/tag.
-NeoBundle 'Shougo/vimshell', { 'rev' : '3787e5' }
-NeoBundle 'tpope/vim-endwise'
+  " TOML を読み込み、キャッシュしておく
+  call dein#load_toml(s:toml,      {'lazy': 0})
+  call dein#load_toml(s:lazy_toml, {'lazy': 1})
 
-" Required:
-call neobundle#end()
+  " 設定終了
+  call dein#end()
+  call dein#save_state()
+endif
 
-" Required:
-filetype plugin indent on
-
-" If there are uninstalled bundles found on startup,
-" this will conveniently prompt you to install them.
-NeoBundleCheck
-"End NeoBundle Scripts-------------------------
+" もし、未インストールものものがあったらインストール
+if dein#check_install()
+  call dein#install()
+endif
+"general----------------------------------------------------------------------
 
 " Tabの設定
 set tabstop=4
