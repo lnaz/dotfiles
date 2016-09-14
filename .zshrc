@@ -151,6 +151,8 @@ fi
 # suffix alias
 alias -s py=python
 
+alias vi='vim'
+
 bindkey '^K' up-line-or-search 
 bindkey '^J' down-line-or-search
 
