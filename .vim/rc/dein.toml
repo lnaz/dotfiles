@@ -5,9 +5,6 @@ repo = 'Shougo/dein.vim'
 repo = 'Shougo/context_filetype.vim'
 
 [[plugins]]
-repo = 'Shougo/context_filetype.vim'
-
-[[plugins]]
 repo = 'Shougo/neoinclude.vim'
 
 [[plugins]]
@@ -81,3 +78,12 @@ repo = 'tpope/vim-endwise'
 
 [[plugins]]
 repo = 'tomtom/tcomment_vim'
+
+[[plugins]]
+repo = 'tpope/vim-fugitive'
+
+[[plugins]]
+repo = 't9md/vim-quickhl'
+
+[[plugins]]
+repo = 'itchyny/lightline.vim'

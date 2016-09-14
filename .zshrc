@@ -1,7 +1,6 @@
-# 少し凝った zshrc
-# License : MIT
+########################################
+# 参考:
 # http://mollifier.mit-license.org/
-
 ########################################
 # 環境変数
 export LANG=ja_JP.UTF-8
@@ -11,7 +10,7 @@ export LANG=ja_JP.UTF-8
 autoload -Uz colors
 colors
 
-# emacs 風キーバインドにする
+# vim 風キーバインドにする
 bindkey -v
 
 # ヒストリの設定
@@ -55,8 +54,7 @@ zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin \
 zstyle ':completion:*:processes' command 'ps x -o pid,s,args'
 
 
-########################################
-# vcs_info
+######################################## # vcs_info
 autoload -Uz vcs_info
 autoload -Uz add-zsh-hook
 
@@ -149,7 +147,12 @@ elif which putclip >/dev/null 2>&1 ; then
     alias -g C='| putclip'
 fi
 
+########################################
+# suffix alias
+alias -s py=python
 
+bindkey '^K' up-line-or-search 
+bindkey '^J' down-line-or-search
 
 ########################################
 # OS 別の設定
@@ -162,6 +165,7 @@ case ${OSTYPE} in
     linux*)
         #Linux用の設定
         alias ls='ls -F --color=auto'
+        alias 
         ;;
 esac
 
