@@ -5,9 +5,6 @@ repo = 'Shougo/dein.vim'
 repo = 'Shougo/context_filetype.vim'
 
 [[plugins]]
-repo = 'tyru/caw.vim'
-
-[[plugins]]
 repo = 'Shougo/context_filetype.vim'
 
 [[plugins]]
@@ -71,6 +68,9 @@ repo = 'lervag/vimtex'
 repo = "thinca/vim-quickrun"
 
 [[plugins]]
+repo = 'osyo-manga/unite-quickfix'
+
+[[plugins]]
 repo = 'osyo-manga/shabadou.vim'
 
 [[plugins]]
@@ -78,3 +78,6 @@ repo = 'Shougo/vimshell'
 
 [[plugins]]
 repo = 'tpope/vim-endwise'
+
+[[plugins]]
+repo = 'tomtom/tcomment_vim'

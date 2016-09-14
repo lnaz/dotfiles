@@ -35,8 +35,8 @@ endif
 if dein#check_install()
   call dein#install()
 endif
-"general----------------------------------------------------------------------
 
+"general----------------------------------------------------------------------
 " Tabの設定
 set tabstop=4
 set autoindent
@@ -83,9 +83,6 @@ set clipboard=unnamed,autoselect
 " j, k による移動を折り返されたテキストでも自然に振る舞うように変更
 nnoremap j gj
 nnoremap k gk
-" :w,:qを大文字でも可に
-cnoremap W w
-cnoremap Q q
 " vを二回で行末まで選択
 vnoremap v $h
 " Dでヤンクしない
@@ -147,16 +144,9 @@ endif
 colorscheme molokai
 set t_Co=256
 
-"caw.vim-----------------------------------------------------------------------
-" コメントアウトを切り替えるマッピング
-" \c でカーソル行をコメントアウト
-" 再度 \c でコメントアウトを解除
-" 選択してから複数行の \c も可能
-nmap \c <Plug>(caw:zeropos:toggle)
-vmap \c <Plug>(caw:zeropos:toggle)
-" \C でコメントアウトの解除
-nmap \C <Plug>(caw:zeropos:uncomment)
-vmap \C <Plug>(caw:zeropos:uncomment)
+"tcomment.vim-----------------------------------------------------------------------
+nmap \c :TComment<CR>
+vmap \c :TComment<CR>
 
 "neocomplete, jedi---------------------------------------------------------
 "参考:http://dackdive.hateblo.jp/entry/2014/08/13/130000
@@ -219,62 +209,28 @@ let g:indent_guides_guide_size = 1
 " call submode#map('my_x', 'n', 'r', 'x', '<Plug>(my-x)')
 
 "vim-quickrun-------------------------------------------------
-" nmap <Leader>r <Plug>(quickrun)
-" let s:hooks = neobundle#get_hooks("vim-quickrun")
-" function! s:hooks.on_source(bundle)
+" 参考:http://qiita.com/uplus_e10/items/2a75fbe3d80063eb9c18
 let g:quickrun_config = {
     \ '_' : {
-    \   'outputter/buffer/split': ':botright 8sp',
     \   'runner': 'vimproc',
     \   'runner/vimproc/updatetime': 40,
+    \   'outputter/error/success': 'buffer',
+    \   'outputter/error/error': 'quickfix',
+    \   'outputter/buffer/split': ':rightbelow 8sp',
+    \   'outputter/buffer/close_on_empty': 1,
+    \ },
+    \ 'tex': {
+    \   'command': 'latexmk',
+    \   'cmdopt': '-pdfdvi -pvc',
+    \   'exec': '[%c %o %s]',
     \ }
     \}
-"    \ 'tex': {
-"    \   'command': 'latexmk',
-"    \   'cmdopt': '-pdfdvi -pvc',
-"    \   'exec': [%c %o %s]
-"    \ }
-"    \}
-"       \   "_": {
-" 			\			"outputter/buffer/split": ":botright 8sp",
-" 			\			"outputter/buffer/into": 1,
-"       \     "hook/close_quickfix/enable_success" : 1,
-"       \     "hook/close_buffer/enable_failure" : 1,
-"       \     "outputter" : "multi:buffer:quickfix",
-"       \     "hook/neco/enable" : 1,
-"       \     "hook/neco/wait" : 20,
-"       \     "runner": "vimproc",
-"       \     "hook/time/enable" : 1,
-"       \   },
-"       \   'tex':{
-"       \     'command' : 'latexmk',
-"       \     'cmdopt': '-pdfdvi -pvc',
-"       \     'exec': ['%c %o %s']
-"       \   },
-"       \   'python':{
-"       \     'command' : 'python',
-"       \     'exec': ['%c %s']
-"       \   },
-"       \ }
-" endfunction
-" " q でquickfixを閉じれるようにする。
-" au FileType qf nnoremap <silent><buffer>q :quit<CR>
-" " \r で保存してからquickrunを実行する。
-" let g:quickrun_no_default_key_mappings = 1
-" nnoremap <Leader>r :write<CR>:QuickRun -mode n<CR>
-" xnoremap <Leader>r :<C-U>write<CR>gv:QuickRun -mode v<CR>
-" " \r でquickfixを閉じて、保存してからquickrunを実行する。
-" let g:quickrun_no_default_key_mappings = 1
-" nnoremap <Leader>r :cclose<CR>:write<CR>:QuickRun -mode n<CR>
-" xnoremap <Leader>r :<C-U>cclose<CR>:write<CR>gv:QuickRun -mode v<CR>
-" " <C-c> でquickrunを停止
-" nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
 
 "vimtex---------------------------------------------------------
 let g:tex_flavor='latex'
 let g:vimtex_latexmk_options = '-pdf'
 
-"Unite------------------------------------------------------------------
+"unite.vim------------------------------------------------------------------
 " The prefix key.
 nnoremap    [unite]   <Nop>
 nmap    <Leader>f [unite]
