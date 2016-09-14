@@ -147,7 +147,7 @@ endif
 colorscheme molokai
 set t_Co=256
 
-" caw.vimの設定
+"caw.vim-----------------------------------------------------------------------
 " コメントアウトを切り替えるマッピング
 " \c でカーソル行をコメントアウト
 " 再度 \c でコメントアウトを解除
@@ -218,32 +218,44 @@ let g:indent_guides_guide_size = 1
 " call submode#enter_with('my_x', 'n', '', 'x', '"_x')
 " call submode#map('my_x', 'n', 'r', 'x', '<Plug>(my-x)')
 
-" "vim-quickrun-------------------------------------------------
+"vim-quickrun-------------------------------------------------
 " nmap <Leader>r <Plug>(quickrun)
 " let s:hooks = neobundle#get_hooks("vim-quickrun")
 " function! s:hooks.on_source(bundle)
-"   let g:quickrun_config = {
-"         \   "_": {
-" 				\			"outputter/buffer/split": ":botright 8sp",
-" 				\			"outputter/buffer/into": 1,
-"         \     "hook/close_quickfix/enable_success" : 1,
-"         \     "hook/close_buffer/enable_failure" : 1,
-"         \     "outputter" : "multi:buffer:quickfix",
-"         \     "hook/neco/enable" : 1,
-"         \     "hook/neco/wait" : 20,
-"         \     "runner": "vimproc",
-"         \     "hook/time/enable" : 1,
-"         \   },
-"         \   'tex':{
-"         \     'command' : 'latexmk',
-"         \     'cmdopt': '-pdfdvi -pvc',
-"         \     'exec': ['%c %o %s']
-"         \   },
-"         \   'python':{
-"         \     'command' : 'python',
-"         \     'exec': ['%c %s']
-"         \   },
-"         \ }
+let g:quickrun_config = {
+    \ '_' : {
+    \   'outputter/buffer/split': ':botright 8sp',
+    \   'runner': 'vimproc',
+    \   'runner/vimproc/updatetime': 40,
+    \ }
+    \}
+"    \ 'tex': {
+"    \   'command': 'latexmk',
+"    \   'cmdopt': '-pdfdvi -pvc',
+"    \   'exec': [%c %o %s]
+"    \ }
+"    \}
+"       \   "_": {
+" 			\			"outputter/buffer/split": ":botright 8sp",
+" 			\			"outputter/buffer/into": 1,
+"       \     "hook/close_quickfix/enable_success" : 1,
+"       \     "hook/close_buffer/enable_failure" : 1,
+"       \     "outputter" : "multi:buffer:quickfix",
+"       \     "hook/neco/enable" : 1,
+"       \     "hook/neco/wait" : 20,
+"       \     "runner": "vimproc",
+"       \     "hook/time/enable" : 1,
+"       \   },
+"       \   'tex':{
+"       \     'command' : 'latexmk',
+"       \     'cmdopt': '-pdfdvi -pvc',
+"       \     'exec': ['%c %o %s']
+"       \   },
+"       \   'python':{
+"       \     'command' : 'python',
+"       \     'exec': ['%c %s']
+"       \   },
+"       \ }
 " endfunction
 " " q でquickfixを閉じれるようにする。
 " au FileType qf nnoremap <silent><buffer>q :quit<CR>
@@ -261,34 +273,6 @@ let g:indent_guides_guide_size = 1
 "vimtex---------------------------------------------------------
 let g:tex_flavor='latex'
 let g:vimtex_latexmk_options = '-pdf'
-" texのconcealを無効化
-" let g:tex_conceal=''
-" let g:vimtex_fold_enabled = 1
-" let g:vimtex_fold_automatic = 1
-" let g:vimtex_fold_envs = 1
-" let g:vimtex_toc_split_pos = "topleft"
-" let g:vimtex_toc_width = 10
-" if !exists('g:neocomplete#sources#omni#input_patterns')
-"   let g:neocomplete#sources#omni#input_patterns = {}
-" endiopenedf
-" let g:neocomplete#sources#omni#input_patterns.tex = "\\cite{\s*[0-9A-Za-z_:]*\|\\ref{\s*[0-9A-Za-z_:]*"
-"
-" augroup myLaTeXQuickrun
-"     au!
-"     if has('gui_running')
-"         au BufEnter *.tex inoremap <silent> $  <C-g>u$$<ESC>:call IMState("Leave")<CR>i
-"     endif
-" augroup END
-"
-" function! s:TeXDollarFunc()
-"     " ime fixed?
-"     let s:cmd = "<Left>"
-"     if g:IMState == 2
-"         s:cmd += "<C-^>"
-"     endif
-"
-"     return s:cmd
-" endfunction
 
 "Unite------------------------------------------------------------------
 " The prefix key.
@@ -330,4 +314,3 @@ au FileType unite inoremap <silent> <buffer> <ESC><ESC> <ESC>:q<CR>
 "vimfiler---------------------------------------------------------
 nnoremap <leader>e :VimFilerExplore -split -winwidth=30 -find -no-quit -buffer-name=vimfiler<CR>
 au FileType vimfiler nnoremap <silent> <buffer> <ESC><ESC> :q<CR>
-nnoremap <ESC><ESC> :VimFilerClose vimfiler<CR>
