@@ -1,9 +1,8 @@
-"dein.vim----------------------------------------------------------------------
+" dein.vim------------------------------------------------------------------------
 " プラグインが実際にインストールされるディレクトリ
 let s:dein_dir = expand('~/.cache/dein')
 " dein.vim 本体
 let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
-
 " dein.vim がなければ github から落としてくる
 if &runtimepath !~# '/dein.vim'
   if !isdirectory(s:dein_repo_dir)
@@ -11,32 +10,27 @@ if &runtimepath !~# '/dein.vim'
   endif
   execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
 endif
-
 " 設定開始
 if dein#load_state(s:dein_dir)
   call dein#begin(s:dein_dir)
-
   " プラグインリストを収めた TOML ファイル
   " 予め TOML ファイル(後述)を用意しておく
   let g:rc_dir    = expand('~/.vim/rc')
   let s:toml      = g:rc_dir . '/dein.toml'
   let s:lazy_toml = g:rc_dir . '/dein_lazy.toml'
-
   " TOML を読み込み、キャッシュしておくp
   call dein#load_toml(s:toml,      {'lazy': 0})
   call dein#load_toml(s:lazy_toml, {'lazy': 1})
-
   " 設定終了
   call dein#end()
   call dein#save_state()
 endif
-
 " もし、未インストールものものがあったらインストール
 if dein#check_install()
   call dein#install()
 endif
 
-"general----------------------------------------------------------------------
+" general-------------------------------------------------------------------------
 " Tabの設定
 set tabstop=4
 set autoindent
@@ -141,57 +135,105 @@ if has('syntax')
     augroup END
     call ZenkakuSpace()
 endif
+" filetype
+filetype on
+filetype plugin on
 
-"molokai-----------------------------------------------------------------
+" molokai-------------------------------------------------------------------------
 colorscheme molokai
 set t_Co=256
 
-"tcomment.vim-----------------------------------------------------------------------
+" tcomment.vim--------------------------------------------------------------------
 nmap \c :TComment<CR>
 vmap \c :TComment<CR>
 
-" "neocomplete, jedi---------------------------------------------------------
-" "参考:http://dackdive.hateblo.jp/entry/2014/08/13/130000
-" "Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
-" " Disable AutoComplPop.
-" let g:acp_enableAtStartup = 0
-" " Use neocomplete.
-" let g:neocomplete#enable_at_startup = 1
-" " Use smartcase.
-" let g:neocomplete#enable_smart_case = 1
-" " Set minimum syntax keyword length.
-" let g:neocomplete#sources#syntax#min_keyword_length = 3
-" let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
-" " Plugin key-mappings.
-" inoremap <expr><C-g>     neocomplete#undo_completion()
-" inoremap <expr><C-l>     neocomplete#complete_common_string()
-"
-" " Recommended key-mappings.
-" " <CR>: close popup and save indent.
-" inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-" function! s:my_cr_function()
-" 	" return neocomplete#close_popup() . "\<CR>"
-" 	" For no inserting <CR> key.
-" 	return pumvisible() ? neocomplete#close_popup() : "\<CR>"
-" endfunction
-" " <TAB>: completion.
-" inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-" " <C-h>, <BS>: close popup and delete backword char.
-" inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-" inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-" inoremap <expr><C-y>  neocomplete#close_popup()
-" inoremap <expr><C-e>  neocomplete#cancel_popup()
-" " Close popup by <Space>.
-" inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() : "\<Space>"
-" autocmd FileType python setlocal omnifunc=jedi#completions
-" let g:jedi#completions_enabled = 0
-" let g:jedi#auto_vim_configuration = 0
-" if !exists('g:neocomplete#force_omni_input_patterns')
-" 	let g:neocomplete#force_omni_input_patterns = {}
-" endif
-" let g:neocomplete#force_omni_input_patterns.python = '\h\w*\|[^. \t]\.\w*'
-"
-"vim-indent-guides-----------------------------------------
+" neocomplete---------------------------------------------------------------------
+"Note: This option must be set in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
+" Disable AutoComplPop.
+let g:acp_enableAtStartup = 0
+" Use neocomplete.
+let g:neocomplete#enable_at_startup = 1
+" Use smartcase.
+let g:neocomplete#enable_smart_case = 1
+" Set minimum syntax keyword length.
+let g:neocomplete#sources#syntax#min_keyword_length = 3
+let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+
+" Define dictionary.
+let g:neocomplete#sources#dictionary#dictionaries = {
+    \ 'default' : '',
+    \ 'vimshell' : $HOME.'/.vimshell_hist',
+    \ 'scheme' : $HOME.'/.gosh_completions'
+        \ }
+
+" Define keyword.
+if !exists('g:neocomplete#keyword_patterns')
+    let g:neocomplete#keyword_patterns = {}
+endif
+let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+
+" Plugin key-mappings.
+inoremap <expr><C-g>     neocomplete#undo_completion()
+inoremap <expr><C-l>     neocomplete#complete_common_string()
+
+" Recommended key-mappings.
+" <CR>: close popup and save indent.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function()
+  return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
+  " For no inserting <CR> key.
+  "return pumvisible() ? "\<C-y>" : "\<CR>"
+endfunction
+" <TAB>: completion.
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" <C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+" Close popup by <Space>.
+"inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
+
+" AutoComplPop like behavior.
+"let g:neocomplete#enable_auto_select = 1
+
+" Shell like behavior(not recommended).
+"set completeopt+=longest
+"let g:neocomplete#enable_auto_select = 1
+"let g:neocomplete#disable_auto_complete = 1
+"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
+
+" Enable omni completion.
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+" Enable heavy omni completion.
+if !exists('g:neocomplete#sources#omni#input_patterns')
+  let g:neocomplete#sources#omni#input_patterns = {}
+endif
+"let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+"let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+"let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+
+" For perlomni.vim setting.
+" https://github.com/c9s/perlomni.vim
+let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+
+" jedi.vim------------------------------------------------------------------------
+"参考:http://dackdive.hateblo.jp/entry/2014/08/13/130000
+" quickrunとの競合阻止
+let g:jedi#rename_command = ""
+" neocompleteと連携
+autocmd FileType python setlocal omnifunc=jedi#completions
+let g:jedi#completions_enabled = 0
+let g:jedi#auto_vim_configuration = 0
+if !exists('g:neocomplete#force_omni_input_patterns')
+        let g:neocomplete#force_omni_input_patterns = {}
+endif
+let g:neocomplete#force_omni_input_patterns.python = '\h\w*\|[^. \t]\.\w*'
+
+" vim-indent-guides---------------------------------------------------------------
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_start_level=2
 let g:indent_guides_auto_colors=0
@@ -200,7 +242,7 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesEven  ctermbg=234
 let g:indent_guides_color_change_percent = 30
 let g:indent_guides_guide_size = 1
 
-"vim-submode----------------------------------------------
+" vim-submode---------------------------------------------------------------------
 " xでたくさん消しても一発undo可能に
 " function! s:my_x()
 "     undojoin
@@ -210,7 +252,7 @@ let g:indent_guides_guide_size = 1
 " call submode#enter_with('my_x', 'n', '', 'x', '"_x')
 " call submode#map('my_x', 'n', 'r', 'x', '<Plug>(my-x)')
 
-"vim-quickrun-------------------------------------------------
+" vim-quickrun--------------------------------------------------------------------
 " 参考:http://qiita.com/uplus_e10/items/2a75fbe3d80063eb9c18
 let g:quickrun_config = {
     \ '_' : {
@@ -228,11 +270,11 @@ let g:quickrun_config = {
     \ }
     \}
 
-"vimtex---------------------------------------------------------
+" vimtex--------------------------------------------------------------------------
 let g:tex_flavor='latex'
 let g:vimtex_latexmk_options = '-pdf'
 
-"unite.vim------------------------------------------------------------------
+" unite.vim-----------------------------------------------------------------------
 " The prefix key.
 nnoremap    [unite]   <Nop>
 nmap    <Leader>f [unite]
@@ -274,16 +316,19 @@ au FileType unite inoremap <silent> <buffer> <expr> <C-j> unite#do_action('split
 " ウィンドウを縦に分割して開く
 au FileType unite nnoremap <silent> <buffer> <expr> <C-l> unite#do_action('vsplit')
 au FileType unite inoremap <silent> <buffer> <expr> <C-l> unite#do_action('vsplit')
-"vimfiler---------------------------------------------------------
+
+" vimfiler------------------------------------------------------------------------
 nnoremap <leader>e :VimFilerExplore -split -winwidth=30 -find -no-quit -buffer-name=vimfiler<CR>
 au FileType vimfiler nnoremap <silent> <buffer> <ESC><ESC> :q<CR>
-"vim-quickhl---------------------------------------------------------
+
+" vim-quickhl---------------------------------------------------------------------
 nmap <Space>h <Plug>(quickhl-manual-this)
 xmap <Space>h <Plug>(quickhl-manual-this)
 nmap <Space>H <Plug>(quickhl-manual-reset)
 xmap <Space>H <Plug>(quickhl-manual-reset)
-"lightline.vim-------------------------------------------------------------------
-"参考:http://itchyny.hatenablog.com/entry/20130828/1377653592
+
+" lightline.vim-------------------------------------------------------------------
+" 参考:http://itchyny.hatenablog.com/entry/20130828/1377653592
 let g:lightline = {
         \ 'colorscheme': 'wombat',
         \ 'mode_map': {'c': 'NORMAL'},
@@ -301,7 +346,6 @@ let g:lightline = {
         \   'mode': 'LightLineMode'
         \ }
         \ }
-
 function! LightLineModified()
   return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
 endfunction
@@ -334,4 +378,8 @@ function! LightLineFileencoding()
 endfunction
 function! LightLineMode()
   return winwidth(0) > 60 ? lightline#mode() : ''
+
 endfunction
+" vim-flake8----------------------------------------------------------------------
+au FileType python nnoremap <Leader>l :call Flake8()<CR>
+" --------------------------------------------------------------------------------
