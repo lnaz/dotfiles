@@ -134,7 +134,6 @@ endif
 " filetype
 filetype on
 filetype plugin on
-
 " molokai-------------------------------------------------------------------------
 colorscheme molokai
 set t_Co=256
@@ -377,5 +376,7 @@ function! LightLineMode()
 
 endfunction
 " vim-flake8----------------------------------------------------------------------
-au FileType python nnoremap <Leader>l :call Flake8()<CR>
+" au FileType python nnoremap <Leader>l :call Flake8()<CR>
+" syntastic-----------------------------------------------------------------------
+" let g:syntastic_python_checkers = ['pyflakes', 'pep8']
 " --------------------------------------------------------------------------------

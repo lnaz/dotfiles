@@ -1,5 +1,7 @@
 [[plugins]]
 repo = 'Shougo/dein.vim'
+rtp = ''
+hook_add = 'source ~/.vim/rc/plugins/dein.rc.vim'
 
 [[plugins]]
 repo = 'Shougo/context_filetype.vim'
@@ -89,7 +91,5 @@ repo = 't9md/vim-quickhl'
 repo = 'itchyny/lightline.vim'
 
 [[plugins]]
-repo = 'kevinw/pyflakes-vim'
+repo = 'tell-k/vim-autopep8'
 
-[[plugins]]
-repo = 'nvie/vim-flake8'
