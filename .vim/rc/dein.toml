@@ -93,3 +93,5 @@ repo = 'itchyny/lightline.vim'
 [[plugins]]
 repo = 'tell-k/vim-autopep8'
 
+[[plugins]]
+repo = 'kchmck/vim-coffee-script'
