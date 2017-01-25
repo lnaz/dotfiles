@@ -1,12 +1,14 @@
+export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python
+export PATH=$PATH:/usr/local/bin
 source /usr/local/bin/virtualenvwrapper.sh
 export WORKON_HOME=~/.virtualenvs
 
 case ${OSTYPE} in
     darwin*)
         #for Mac
+        export PATH=$HOME/.nodebrew/current/bin:$PATH
         export PYENV_ROOT=$HOME/.pyenv
         export PATH=$PYENV_ROOT/bin:$PATH
-        eval $(pyenv init -)
         ;;
     linux*)
         #for Ubuntu
