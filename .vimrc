@@ -379,7 +379,7 @@ endfunction
 " au FileType python nnoremap <Leader>l :call Flake8()<CR>
 " syntastic-----------------------------------------------------------------------
 " let g:syntastic_python_checkers = ['pyflakes', 'pep8']
-" --------------------------------------------------------------------------------
+
 " vim-coffee-script---------------------------------------------------------------
 " coffeeファイルタイプ認識
 au BufRead,BufNewFile,BufReadPre *.coffee   set filetype=coffee
@@ -392,3 +392,13 @@ autocmd FileType coffee    setlocal sw=2 sts=2 ts=2 et
 " autocmd QuickFixCmdPost * nested cwindow | redraw! 
 " " Ctrl-cで右ウィンドウにコンパイル結果を一時表示する
 " nnoremap <silent> <C-C> :CoffeeCompile vert <CR><C-w>h
+
+" ejs-syntax----------------------------------------------------------------------
+autocmd BufNewFile,BufRead *.ejs set filetype=ejs
+autocmd BufNewFile,BufRead *._ejs set filetype=ejs
+function! s:DetectEjs()
+    if getline(1) =~ '^#!.*\<ejs\>'
+        set filetype=ejs
+    endif
+endfunction
+autocmd BufNewFile,BufRead * call s:DetectEjs()
