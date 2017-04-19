@@ -94,6 +94,8 @@ set hlsearch
 nnoremap <ESC><ESC> :noh<CR>
 " 検索ワードの途中でも検索
 set incsearch
+" タイトルなし
+set notitle
 " 下に分割
 set splitbelow
 " ウィンドウ分割したとき，アクティブを変更
