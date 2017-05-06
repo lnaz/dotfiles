@@ -143,7 +143,10 @@ set t_Co=256
 " tcomment.vim--------------------------------------------------------------------
 nmap \c :TComment<CR>
 vmap \c :TComment<CR>
-
+" kvファイルに対応
+au BufRead,BufNewFile *.kv setfiletype kivy
+au FileType kivy nmap \c :TCommentAs python<CR>
+au FileType kivy vmap \c :TCommentAs python<CR>
 " neocomplete---------------------------------------------------------------------
 "Note: This option must be set in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
 " Disable AutoComplPop.
